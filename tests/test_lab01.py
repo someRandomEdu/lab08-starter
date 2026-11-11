@@ -14,3 +14,25 @@ Useful imports:
 
 Do not depend on test execution order. Fixtures: client, app, sample_book.
 """
+
+def test_get_books(client):
+    response = client.get("/books")
+    assert response.status == 200
+    assert response.get_json() == []
+
+
+def test_get_book(client):
+    response = client.get("/books/9999")
+    assert response.status == 404
+    assert response.get_json()["code"] == "NOT_FOUND"
+
+
+def test_post_book_invalid(client):
+    response = client.post("/books", json={ "title": "crashMe" })
+    assert response.status == 400
+
+
+def test_post_book_valid(client):
+    response = client.post("/books", json={ "title": "test", "author": "coder", "year": 2026, "isbn": "0000000000000" })
+    assert response.status == 201
+

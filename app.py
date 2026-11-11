@@ -6,6 +6,7 @@ Authentication in this starter is intentionally a DEMO, not a security model.
 import argparse
 import os
 from pathlib import Path
+from typing import Any
 
 from flask import Flask, jsonify, request
 from marshmallow import Schema, ValidationError, fields, validate
@@ -101,7 +102,7 @@ def create_app(config=None, cfg=None):
 
     @app.post("/books")
     def create_book():
-        data = parse_book()
+        data: Any = parse_book()
         book = Book(**data)
         db.session.add(book)
         try:
@@ -118,7 +119,7 @@ def create_app(config=None, cfg=None):
         book = db.session.get(Book, int(book_id))
         if book is None:
             return error(404, "NOT_FOUND", "Book not found")
-        data = parse_book()
+        data: Any = parse_book()
         # PUT replaces optional values when omitted.
         for field in ("title", "author", "year", "isbn"):
             setattr(book, field, data.get(field))
